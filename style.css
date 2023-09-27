@@ -1,0 +1,19 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #242424;
+}
+
+canvas {
+  border: 10px solid #0e00a3;
+  margin-top: 10px; /* gap between button and canvas */
+}
+
+#startButton {
+  padding: 10px 20px; /* height, width */
+}
