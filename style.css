@@ -14,7 +14,3 @@ canvas {
   margin-top: 10px; /* gap between button and canvas */
   background-color: rgb(0, 0, 0);
 }
-
-#startButton {
-  padding: 10px 20px; /* height, width */
-}
