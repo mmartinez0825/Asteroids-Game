@@ -28,21 +28,21 @@ const TEXT_FADE_TIME = 2.5; // text fade time in seconds
 const TEXT_SIZE = 40; // text font height in pixels
 
 /** @type {HTMLCanvasElement} */
-var canv = document.getElementById("gameCanvas");
-var ctx = canv.getContext("2d");
+let canv = document.getElementById("gameCanvas");
+let ctx = canv.getContext("2d");
 
 // set up sound effects
-var fxExplode = new Sound("sounds/explode.m4a");
-var fxHit = new Sound("sounds/hit.m4a", 5);
-var fxLaser = new Sound("sounds/laser.m4a", 5, 0.5);
-var fxThrust = new Sound("sounds/thrust.m4a");
+let fxExplode = new Sound("sounds/explode.m4a");
+let fxHit = new Sound("sounds/hit.m4a", 5);
+let fxLaser = new Sound("sounds/laser.m4a", 5, 0.5);
+let fxThrust = new Sound("sounds/thrust.m4a");
 
 // set up the music
-var music = new Music("sounds/music-low.m4a", "sounds/music-high.m4a");
-var roidsLeft, roidsTotal;
+let music = new Music("sounds/bg-music.mp3");
+let roidsLeft, roidsTotal;
 
 // set up the game parameters
-var level, lives, roids, score, scoreHigh, ship, text, textAlpha;
+let level, lives, roids, score, scoreHigh, ship, text, textAlpha;
 newGame();
 
 // set up event handlers
@@ -56,8 +56,8 @@ function createAsteroidBelt() {
   roids = [];
   roidsTotal = (ROID_NUM + level) * 7;
   roidsLeft = roidsTotal;
-  var x, y;
-  for (var i = 0; i < ROID_NUM + level; i++) {
+  let x, y;
+  for (let i = 0; i < ROID_NUM + level; i++) {
     // random asteroid location (not touching spaceship)
     do {
       x = Math.floor(Math.random() * canv.width);
@@ -68,9 +68,9 @@ function createAsteroidBelt() {
 }
 
 function destroyAsteroid(index) {
-  var x = roids[index].x;
-  var y = roids[index].y;
-  var r = roids[index].r;
+  let x = roids[index].x;
+  let y = roids[index].y;
+  let r = roids[index].r;
 
   // split the asteroid in two if necessary
   if (r == Math.ceil(ROID_SIZE / 2)) {
@@ -189,8 +189,8 @@ function keyUp(/** @type {KeyboardEvent} */ ev) {
 }
 
 function newAsteroid(x, y, r) {
-  var lvlMult = 1 + 0.1 * level;
-  var roid = {
+  let lvlMult = 1 + 0.1 * level;
+  let roid = {
     x: x,
     y: y,
     xv:
@@ -206,7 +206,7 @@ function newAsteroid(x, y, r) {
   };
 
   // populate the offsets array
-  for (var i = 0; i < roid.vert; i++) {
+  for (let i = 0; i < roid.vert; i++) {
     roid.offs.push(Math.random() * ROID_JAG * 2 + 1 - ROID_JAG);
   }
 
@@ -220,7 +220,7 @@ function newGame() {
   ship = newShip();
 
   // get the high score from local storage
-  var scoreStr = localStorage.getItem(SAVE_KEY_SCORE);
+  let scoreStr = localStorage.getItem(SAVE_KEY_SCORE);
   if (scoreStr == null) {
     scoreHigh = 0;
   } else {
@@ -312,7 +312,7 @@ function Music(srcLow, srcHigh) {
 function Sound(src, maxStreams = 1, vol = 1.0) {
   this.streamNum = 0;
   this.streams = [];
-  for (var i = 0; i < maxStreams; i++) {
+  for (let i = 0; i < maxStreams; i++) {
     this.streams.push(new Audio(src));
     this.streams[i].volume = vol;
   }
@@ -331,8 +331,8 @@ function Sound(src, maxStreams = 1, vol = 1.0) {
 }
 
 function update() {
-  var blinkOn = ship.blinkNum % 2 == 0;
-  var exploding = ship.explodeTime > 0;
+  let blinkOn = ship.blinkNum % 2 == 0;
+  let exploding = ship.explodeTime > 0;
 
   // tick the music
   music.tick();
@@ -342,8 +342,8 @@ function update() {
   ctx.fillRect(0, 0, canv.width, canv.height);
 
   // draw the asteroids
-  var a, r, x, y, offs, vert;
-  for (var i = 0; i < roids.length; i++) {
+  let a, r, x, y, offs, vert;
+  for (let i = 0; i < roids.length; i++) {
     ctx.strokeStyle = "slategrey";
     ctx.lineWidth = SHIP_SIZE / 20;
 
@@ -360,7 +360,7 @@ function update() {
     ctx.moveTo(x + r * offs[0] * Math.cos(a), y + r * offs[0] * Math.sin(a));
 
     // draw the polygon
-    for (var j = 1; j < vert; j++) {
+    for (let j = 1; j < vert; j++) {
       ctx.lineTo(
         x + r * offs[j] * Math.cos(a + (j * Math.PI * 2) / vert),
         y + r * offs[j] * Math.sin(a + (j * Math.PI * 2) / vert)
@@ -472,14 +472,14 @@ function update() {
   }
 
   // draw the lasers
-  for (var i = 0; i < ship.lasers.length; i++) {
+  for (let i = 0; i < ship.lasers.length; i++) {
     if (ship.lasers[i].explodeTime == 0) {
       ctx.fillStyle = "salmon";
       ctx.beginPath();
       ctx.arc(
         ship.lasers[i].x,
         ship.lasers[i].y,
-        SHIP_SIZE / 15,
+        SHIP_SIZE / 5,
         0,
         Math.PI * 2,
         false
@@ -537,8 +537,8 @@ function update() {
   }
 
   // draw the lives
-  var lifeColour;
-  for (var i = 0; i < lives; i++) {
+  let lifeColour;
+  for (let i = 0; i < lives; i++) {
     lifeColour = exploding && i == lives - 1 ? "red" : "white";
     drawShip(
       SHIP_SIZE + i * SHIP_SIZE * 1.2,
@@ -563,15 +563,15 @@ function update() {
   ctx.fillText("BEST " + scoreHigh, canv.width / 2, SHIP_SIZE);
 
   // detect laser hits on asteroids
-  var ax, ay, ar, lx, ly;
-  for (var i = roids.length - 1; i >= 0; i--) {
+  let ax, ay, ar, lx, ly;
+  for (let i = roids.length - 1; i >= 0; i--) {
     // grab the asteroid properties
     ax = roids[i].x;
     ay = roids[i].y;
     ar = roids[i].r;
 
     // loop over the lasers
-    for (var j = ship.lasers.length - 1; j >= 0; j--) {
+    for (let j = ship.lasers.length - 1; j >= 0; j--) {
       // grab the laser properties
       lx = ship.lasers[j].x;
       ly = ship.lasers[j].y;
@@ -593,7 +593,7 @@ function update() {
   if (!exploding) {
     // only check when not blinking
     if (ship.blinkNum == 0 && !ship.dead) {
-      for (var i = 0; i < roids.length; i++) {
+      for (let i = 0; i < roids.length; i++) {
         if (
           distBetweenPoints(ship.x, ship.y, roids[i].x, roids[i].y) <
           ship.r + roids[i].r
@@ -639,7 +639,7 @@ function update() {
   }
 
   // move the lasers
-  for (var i = ship.lasers.length - 1; i >= 0; i--) {
+  for (let i = ship.lasers.length - 1; i >= 0; i--) {
     // check distance travelled
     if (ship.lasers[i].dist > LASER_DIST * canv.width) {
       ship.lasers.splice(i, 1);
@@ -680,7 +680,7 @@ function update() {
   }
 
   // move the asteroids
-  for (var i = 0; i < roids.length; i++) {
+  for (let i = 0; i < roids.length; i++) {
     roids[i].x += roids[i].xv;
     roids[i].y += roids[i].yv;
 
